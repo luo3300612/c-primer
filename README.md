@@ -181,6 +181,61 @@ int *p;
 int *&r = p;
 ```
 从右向左读，右边的最重要
+### 常量
+```cpp
+const int a = 10;
+```
+常量必须初始化且不可更改
+
+常量引用是可以使用字面值初始化引用的一个例外
+```cpp
+int i = 42;
+const int &r = 42;
+```
+此时编译器会生成一个temp对象，实际上引用的是该temp对象
+
+允许通过常量引用一个非常量对象，反之则不行，这种行为是合法的，但无法通过引用来更改对象
+
+允许使用指向常量指针来指向一个非常量对象，反之则不行，这也仅仅要求了不可以通过常量指针来更改对象
+
+常量指针
+```cpp
+int errNumb = 0;
+int *const curErr = &errNumb;
+```
+常量指针与指向常量的指针不同，常量指针意味着不可更改的是指针指向的地址而不是指针指向的常量的值
+
+#### 顶层const和底层const
+顶层const就是指针是常量
+
+底层const就是指针指向的是常量
+### 常量表达式
+constexpr变量，常量表达式就指值不会改变并且在编译过程中就能得到计算结果的表达式，可以将变量声明为constexpr类型来验证变量的值是否是一个常量表达式
+
+
+### 类型别名
+通过以下方法可以定义类型别名
+```cpp
+typedef double wages; // wages是double的同义词
+typedef wages base, *p; // base戳double的同义词，p是double*的同义词
+```
+新标准的**别名声明（alias declaration）**
+```cpp
+using SI = Sales_item;
+```
+
+使用别名后的一个误区
+```cpp
+typedef char *pstring;
+const pstring cstr = 0;
+const char *cstr = 0;
+```
+第二行和第三行并不一样，前者是指向char的常量指针，后者是指向const char的指针
+
+### auto类型说明符
+auto可以让编译器分析变量的类型
+
+
 
 ## 常见错误
 ### float的字面值
