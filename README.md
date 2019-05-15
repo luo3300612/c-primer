@@ -235,6 +235,19 @@ const char *cstr = 0;
 ### auto类型说明符
 auto可以让编译器分析变量的类型
 
+### decltype
+如果只想得到某个变量的类型，可以通过decltype完成，甚至可以取函数的返回值，这个过程不会实际执行函数
+```cpp
+char f(int a){
+  while(true){
+    return 'c';
+  }
+}
+
+decltype(f(1)) a = 'w';
+```
+
+`decltype((变量))`加双层括号的结果永远是引用类型
 
 
 ## 常见错误
