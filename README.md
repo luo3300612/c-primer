@@ -249,7 +249,14 @@ decltype(f(1)) a = 'w';
 
 `decltype((变量))`加双层括号的结果永远是引用类型
 
-
+## 头文件
+头文件需要设置保护符
+```
+#ifndef blabla
+#define blabla
+...
+#endif
+```
 ## 常见错误
 ### float的字面值
 ```cpp
