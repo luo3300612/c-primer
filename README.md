@@ -268,3 +268,40 @@ f直接跟在整数后面，应该改成1024.f
 int* a,b;
 ```
 这是合法的写法，但b并非是指针，只是一个int的值
+
+## Chapter3
+### 命名空间的using声明
+通过使用using声明，即可避免反复输入std::
+```cpp
+using std::cin; using std::cout;
+```
+声明以分号结尾，一行可以写多个
+
+### string
+string是可变长的字符序列，使用方法如下
+```cpp
+#include<string>
+using std::string
+```
+#### 初始化
+```cpp
+string s1 = "aanb";
+string s2(10, 'c'); // 'cccccccccc' 
+```
+直接初始化和拷贝初始化
+```cpp
+string s1 = "aabn"; // 拷贝初始化
+string s2("aabn"); // 直接初始化
+```
+对上面的例子来说是一样的，但当使用多个值来初始化时
+```cpp
+string s1 = string(3,'c'); // 直接初始化
+string s2(3,'c'); // 拷贝初始化
+```
+因为c++中使用等号初始化是拷贝初始化的方式，相比而言，使用多个变量初始化的时候，推荐还是使用直接初始化方法
+
+#### 读写
+string接受输入时会自动忽略开头的空白（空格、换行、制表符等），读到下一个空白的位置
+
+可以使用getline读取一整行，读到换行符结束，并丢弃掉该换行符
+
