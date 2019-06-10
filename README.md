@@ -304,4 +304,12 @@ string s2(3,'c'); // 拷贝初始化
 string接受输入时会自动忽略开头的空白（空格、换行、制表符等），读到下一个空白的位置
 
 可以使用getline读取一整行，读到换行符结束，并丢弃掉该换行符
-
+```cpp
+string s;
+getline(cin,s); //读取一整行
+```
+#### empty size
+string.empty()和string.size()
+注意string.size()返回的是一个string::size_type的无符号数，这意味着不能随意对这个数和int型数进行计算
+#### string.func()
+书p82
