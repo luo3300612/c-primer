@@ -530,3 +530,26 @@ string finalgrade = (grade>90)?"high pass":(grade < 60) ?"fail":"pass";
 可以求类型所占的字节数，与decltype一样，不会运行得到结果
 
 sizeof数组可以得到数组的大小
+
+### 逗号运算符
+逗号运算符有两个运算对象，且和逻辑与、逻辑或以及条件运算符一样，规定了运算的求值顺序：从左到右
+
+逗号运算符先求左侧表达式，然后把表达式结果丢掉，再求右侧表达式，作为求值结果
+
+### 类型转换
+不同类型对象进行运算时，会发生类型转换，此时小的类型会提升为大的类型
+
+### 显式转换
+强制类型转换的使用方法是
+
+`cast-name<type>(expression)`
+
+其中，cast-name包括
+
+* static_cast
+* const_cast
+* reinterpret_cast
+
+旧式转化方法为`type(expr)`或`(type)expr`
+
+**慎用类型转换，因为它会干扰正常的类型检查**
