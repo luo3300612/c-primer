@@ -552,4 +552,38 @@ sizeof数组可以得到数组的大小
 
 旧式转化方法为`type(expr)`或`(type)expr`
 
-**慎用类型转换，因为它会干扰正常的类型检查**
+**慎用类型转换，因为它会干扰正常的类型检查** 
+
+### dowhile
+do while 条件语句中出现的变量必须定义在循环之外
+
+### 范围for
+范围for等价于
+```cpp
+for(auto beg=v.begin(),end=v.end();beg!=end;++beg){
+  //
+}
+```
+因此，应避免在循环中修改容器的长度，因为循环维持了一个副本end，如果修改了之后，这个副本的信息就失去时效了
+
+### goto
+**应避免使用goto语句**
+```
+goto label; // goto 的语法
+label: statement; // 设定label的方法
+```
+### throw和try
+throw可以抛出异常，以`runtime_error`为例
+```cpp
+if(condition){
+  throw runtime_error("blah");
+}
+```
+try-catch可以捕获异常
+```cpp
+try{
+  statements
+}catch(runtime_error err){
+  cout << err.what() << endl; //获得err中的字符，就是throw中的"blah"
+}
+```
