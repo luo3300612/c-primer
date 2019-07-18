@@ -1,0 +1,1 @@
+//read要对Sales_data的值进行修改而pring不这样做

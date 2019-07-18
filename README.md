@@ -651,3 +651,161 @@ $ CC factMain.o fact.o -o main # 二选一
 ### 传递多维数组
 传递多维数组时，数组第二维以及和面所有维度的大小都是数组类型的一部分
 
+### main:处理命令行选项
+在命令行中将参数传入到程序
+```shell
+./a.out a b c d
+```
+此时对应main函数
+```cpp
+int main(int argc, char *argv[]){
+  ...
+}
+```
+其中`argc`是参数的个数，包括程序本身，一共5个
+argv记录了每个参数，真实传入的参数下标从1开始
+
+### 含有可变形参的函数
+为了处理相同类型的不同数量的实参，可以使用`initializer_list`类型
+```c++
+void foo(initializer_list<string> il){
+  ...
+}
+```
+它的使用方法几乎与vector相同，唯一的不同就是initializer_list对象中的元素永远是常量，无法改变
+
+### 函数的返回值
+函数的返回值的机制和初始化是一样的道理
+
+当函数接受的形参和返回类型都是const对象的引用，则无论是调用还是返回都不会拷贝值
+
+不要返回局部对象的引用或指针，因为对象返回后即被销毁，引用和指针也就没有意义
+
+函数返回的引用值可以当作左值，比如
+```cpp
+get_val(s,0) = 'A'
+```
+如果`get_val`返回一个char的引用，则可以这样改变char的值
+
+如果main函数中没有返回，编译器会隐式地插入一条返回0的语句，cpp程序main函数返回0表示执行成功，返回其他值表示执行失败
+
+### 返回数组的指针
+虽然不能返回数组，但是可以返回数组的指针，有以下几种方法
+```cpp
+int (*foo(int a))[10]; // 1
+
+typedef int intArr[10]; // 2
+using intArr = int[10]; // 2
+intArr *foo(int a);
+
+decltype(someArray) *foo(int a); // 3
+
+auto foo(int a)->int(*)[10]; // 4
+```
+其中第四个是c++11新加入的尾置返回类型
+
+
+### 函数重载
+如果同一作用域（注意这里）的函数名字相同但形参列表不同，则称为重载（overloaded）函数
+
+拥有顶层const形参无法重载一个没有顶层const的函数
+```cpp
+Record lookup(Phone);
+Record lookup(const Phone);
+
+Record lookup(Phone*);
+Record lookup(Phone* const);
+```
+如果形参是指针或引用，则通过区分其指向的是常量对象还是非常量对象可以实现函数重载
+```cpp
+Record lookup(Account &);
+Record lookup(const Account&);
+
+Record lookup(Account*);
+Record lookup(const Account*);
+```
+
+**const_cast**和重载
+对于这样的一个函数
+```cpp
+const string &shorterString(const string &s1, const string &s2){
+  return s1.size() <= s2.size() ? s1 : s2;
+}
+```
+显然如果函数的参数是非常量的话，我们无法返回一个对常量的引用，此时需要用到const_cast重载函数
+```cpp
+string &shorterString(string &s1,string &s2){
+  auto &r = shorterString(const_cast<const string&>(s1),const_cast<const string&>(s2));
+  return const_cast<string&>(r);
+}
+```
+
+### 重载与作用域
+注意重载的定义，是相同作用域下，如果有更小的作用域中存在同名函数，将覆盖外部作用域中的函数
+
+### 默认实参
+为某个形参提供一个默认实参，它后面的形参都必须要有默认值
+
+### 内联函数和constexpr函数
+调用函数一般比求等价的表达式要慢一点，因为它包括一系列工作：调用前要先保存寄存器，并在返回时恢复、可能需要拷贝实参、程序转向一个新的位置继续执行。
+
+**内联函数可以避免函数调用的开销**
+
+**内联只是向编译器发出的一个请求，编译器可以选择忽略这个请求**
+
+
+### 调试帮助
+**assert**是一种预处理宏，它位于cassert文件中，所谓预处理宏其是一个预处理变量，可以作用在一个表达式上
+```cpp
+assert(expr)
+```
+当表达式为假时，assert输出信息并终端程序的运行
+
+**NDEBUG**预处理变量控制着assert的行为，当它被定义时，程序人跳过所有的assert语句
+
+我们也可以自己编写条件调试代码
+```
+#ifndef NDEBUT
+cerr << __func__ << "something is " << something;
+#endif
+```
+c++定义了一些帮助调试的名字
+* __func__,当前调试函数的名字
+* __FILE__,文件名
+* __TIME__,编译时间
+* __DATE__,编译日期
+
+### 实参类型转换
+为了确定重载函数的最佳匹配，编译器将实参类型到形参类型的转换划分成几个等级，具体排序如下
+* 精准匹配
+  * 实参类型和形参类型相同
+  * 实参从数组类型或函数类型转换成对应的指针类型
+  * 向实参添加顶层const或者从实参中删除顶层const
+* 通过const转换实现的匹配
+* 通过类型提升实现的匹配
+* 通过而算数类型转换或指针转换实现的匹配
+* 通过类类型转换实现的匹配
+
+调用重载函数时应尽量避免强制类型转换，如果在实际应用中确实需要强制类型转换，则说明我们设计的形参集合不合理
+
+### 函数指针
+以下是一个函数指针
+```cpp
+bool (*pf)(const string &,const astring &);
+```
+它指向一个以两个const string引用为参数，返回一个bool值的函数，注意括号的必要，否则它就是一个返回bool指针的函数
+
+当我们把函数名作为一个值使用时，该函数自动地转换成指针
+```cpp
+pf = lengthCompare;
+pf = &lengthCompare; // 等价语句
+```
+且我们使用函数指针调用函数时，无须提前解引用指针
+```cpp
+bool b1 = pf("hello","goodby");
+```
+
+### 函数指针形参
+虽然不能定义函数类型的形参，但形参可以是指向函数的指针，此时类似使用数组指针一样，我们可能需要用到`decltype`或者`typedef`或者`using`或者尾置返回类型方式来简化语句
+
+## 第七章 类
