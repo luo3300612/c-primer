@@ -1,0 +1,1 @@
+//有，唯一的区别就是默认访问权限不同，struct是public，class是private
