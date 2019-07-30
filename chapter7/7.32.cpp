@@ -42,9 +42,7 @@ public:
     os << content << endl;
     return *this;
   }
-  unsigned size() const{
-    return width * height;
-  }
+
   friend void read(istream &, Screen s);
   friend void Window_mgr::clear(unsigned);
 };
