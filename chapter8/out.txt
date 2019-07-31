@@ -1,0 +1,6 @@
+BookNo:6666-6666units_sold:12revenue:150
+BookNo:1111-1111units_sold:1revenue:1
+BookNo:2222-2222units_sold:9revenue:70
+BookNo:6666-6666units_sold:12revenue:150
+BookNo:1111-1111units_sold:1revenue:1
+BookNo:2222-2222units_sold:9revenue:70
