@@ -1,4 +1,11 @@
 # C++ primer
+## Trick
+* 使用迭代器
+* 能使用const使用const，比如迭代器cbegin这样的
+* 对于复杂的结构体或类，能用引用就用引用
+* 常量引用参数比单纯引用更好，因为能接受常量输入或const参数
+* 打开文件记得检查是否打开成功
+
 ## Chapter1
 ### 编译命令
 ```shell
@@ -1038,3 +1045,67 @@ r = Account::rate();
 本节的习题主要问题是
 * 没有对文件对象的打开是否成功作出判断
 * cin.clear()后没有cin.ignore(100,'\n')
+
+### IO类
+IO的头文件
+* iostream:istream,ostream,iostream
+* fstream:ifstream,ofstream,fstream
+* sstream:istringstream,ostringstream,stringstream
+
+ifstream和istringstream都继承自istream
+
+ofstream和ostringstream都继承自ostream
+
+IO对象无拷贝或赋值，且读写一个我IO对象会改变其状态，因此不能是const的
+
+### 条件状态
+流对象可以当作条件，来确认其是否处于良好状态，是否有效
+
+流对象有三个错误位，分别是badbit eofbit和failbit，遇到系统级错误时，badbit被置位，达到文件结束时，eofbit和failbit被置位，如果这三个任意一个被置位，则检测流状态都会失败
+
+执行`clear`可以复位所有标志位
+
+### 输出缓冲
+每个输出流都管理一个缓冲区，缓冲刷新才会真正将输出输出到屏幕上，导致缓冲刷新的原因有
+* 程序正常结束
+* 缓冲区满时
+* 操纵符如endl
+* 关联流
+
+刷新缓冲区
+```cpp
+cout << "hi" << endl; //加一个换行符，刷新
+cout << "hi" << fluish; // 刷新
+cout << "hi" << ends; // 加一个空格，刷新
+```
+
+如果想每次输出直接刷新，可以使用unitbuf操纵符
+```cpp
+cout<<unitbuf; //所有输出立即刷新
+cout<< nounitbuf; //返回正常缓冲方式
+```
+
+**程序崩溃时，缓冲区不会被刷新**
+
+### 关联输入和输出流：见书上吧
+
+### 文件输入和输出
+头文件fstream定义了三个类型支持文件输入输出，ifstream读文件，ofstream写文件，fstream读写文件
+```cpp
+ifstream in(ifile); //构造一个ifstream并打开指定文件
+```
+或者可以声明后调用`open`来打开文件，对应的用`close`关闭文件，只有关闭文件后，才能再打开另一个文件，当一个fstream对象被销毁时，close会自动被调用
+
+
+### 文件模式
+话不多说
+```cpp
+ofstream out("file1",ofstream::out);
+ofstream out("file1",ofstream::out | ofstream::trunc);
+ofstream out("file1",ofstream::out | ofstream::app;
+```
+
+### string流
+istringstream从string中读数据，ostringstream向string中写数据
+
+## 第九章 顺序容器
