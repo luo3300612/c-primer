@@ -1109,3 +1109,31 @@ ofstream out("file1",ofstream::out | ofstream::app;
 istringstream从string中读数据，ostringstream向string中写数据
 
 ## 第九章 顺序容器
+顺序容器类型
+* vector
+* deque,双端队列
+* list，双向链表
+* forward_list，单项链表
+* array，固定大小数组
+* string
+
+头文件名和类型名一样
+
+**通常，vector是最好的选择，除非有很好的理由选择别的容器**
+
+### 迭代器
+迭代器的范围由一对迭代器表示，组成左闭合区间
+
+### 容器类型成员
+容器类型可以在不了解容器中元素类型的情况下使用比如
+```cpp
+list<string>::iterator iter;
+iter::value_type a; // string
+```
+
+### begin和end成员
+可以用`rbegin`来得到反向迭代器，此时++的作用就等于--
+
+容器的迭代器可以是const的，只要用`.cbegin()`即可，如果容器本身是const的，那么即便使用`.begin()`返回的类型也是`const_iterator`
+
+**当不需要写访问时，应使用cbegin和cend**

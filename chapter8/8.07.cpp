@@ -45,7 +45,7 @@ ostream &print(ostream &os, Sales_data &s) {
 int main(int argc, char const *argv[]) {
   Sales_data total;
   ifstream in(argv[1]);
-  ofstream out(argv[2],ofstream::app);
+  ofstream out(argv[2]);
   if (read(in, total)) {
     Sales_data trans;
     while (read(in, trans)) {
