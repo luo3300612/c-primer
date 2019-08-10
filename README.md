@@ -1136,4 +1136,67 @@ iter::value_type a; // string
 
 容器的迭代器可以是const的，只要用`.cbegin()`即可，如果容器本身是const的，那么即便使用`.begin()`返回的类型也是`const_iterator`
 
-**当不需要写访问时，应使用cbegin和cend**
+**当不需要写访问时，应使用cbegin和cend** 
+
+### 容器定义和初始化
+容器定义的方法有
+* C c; 默认构造函数，初始化空容器，array则会自动调用元素的默认初始化方法
+* C c1(c2); 拷贝初始化，容器类型和元素类型必须相同
+* C c{a,b,c...}; C c={a,b,c...}; 初始化为初始化列表中元素的**拷贝**
+* C c(b,e); 初始化为迭代器b和e范围中的元素，元素必须**相容**
+* C seq(n); seq包括n个元素，且次构造函数是explicit的
+* C seq(n,t); seq包括n个初始化为t的元素
+
+元素类型不同但相容的容器（容器类型可以不同）之间的元素拷贝可以通过迭代器完成
+
+### 标准库array
+标准库array有固定大小
+```cpp
+array<int,42>
+```
+与内置数组不同，标准库array可以赋值
+
+### 容器赋值运算
+这里先区分初始化和赋值的区别，初始化在变量定义时发生，赋值在变量定义后发生
+
+容器的赋值运算有
+* c1 = c2
+* c = {a,b,c...} ，array不适用
+* swap(c1,c2),c1.swap(c2)交换c1和c2中的元素，swap通常比从c2向c1拷贝元素快的多，因为swap只是交换了两个容器的内部数据结构，并未交换容器本身，除了array外
+* seq.assign(b,e) 将seq替换为迭代器b和e之间的元素，迭代器不可指向seq
+* seq.assign(il) 将seq中的元素替换为初始化列表il中的元素
+* seq.assign(n,t) 将seq中的元素替换为n个值为t的元素
+
+几点值得注意的地方
+* assign方法无法作用在array上
+* assign方法支持相容的类型赋值
+* swap不移动元素意味着除了string以外，指向容器的迭代器、引用和指针在swap操作后不会失效，它们指向原来指向的元素，只是这些元素已经属于不同的容器了，但swap array对象会真正交换它们的元素，因此swap array后，指针、引用、迭代器等指向的元素值会发生改变
+
+### 容器大小操作
+empty、size、max_size
+
+### 关系运算符
+保存相同元素的相同容器可以通过关系运算符进行比较，比较方式与string类似
+
+### 顺序容器操作
+除array外所有容器都提供灵活的内存管理，在运行时可以动态添加或删除元素来改变容器大小，下面列出顺序容器（非array)添加元素的操作，这里方法不一定适用于forward_list，forward_list之后单独会列出
+* c.push_back(t) 在容器尾部添加元素
+* c.emplace_back(args) 在容器尾部添加由args创建的元素
+* c.push/emplace_front vector string 不支持
+* c.insert(p,t) 在迭代器p指向的元素之前添加元素
+* c.emplace(p,args) ...
+* c.insert(p,n,t) 在迭代器p指向的元素之前插入n个值为t的元素，返回指向新添加的第一个元素的迭代器
+* c.insert(p,b,e) 将迭代器b和e之间的元素插入到p指向的元素之前，b和e不能指向c中的元素，返回指向新添加的第一个元素的迭代器
+* c.insert(p,il) il是一个花括号包围的元素值列表
+
+**向一个vector、string或deque**插入元素会使所有指向容器的迭代器、引用和指针失效
+
+**在一个vector或string尾部之外的任何位置或deque的首位之外的任何位置添加元素，都需要移动元素**
+
+使用insert的返回值，可以在容器的一个特定位置反复插入元素
+```cpp
+list<string> lst;
+auto iter = lst.begin();
+while(cin>>word)
+  iter = lst.insert(iter,word); // 等价于调用push_front
+```
